@@ -1,5 +1,5 @@
-# short lecture on learning logistic neurons by Geoffrey Hinton:
-# https://www.youtube.com/watch?v=--_F0rbPH9M
+# short lecture on backpropagation by Geoffrey Hinton:
+# https://www.youtube.com/watch?v=H47Y7pAssTI
 
 import matplotlib.pyplot as plt
 import numpy as np

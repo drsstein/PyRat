@@ -19,7 +19,7 @@ def run():
     y += rand(len(x)) - 0.5
     
     #reshape x to contain samples as column vectors (one row per input dimension)
-    x = x.reshape(1, len(x))
+    x = x.reshape(1, -1)
 
     #make y 't'arget for prediction
     t = y

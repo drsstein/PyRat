@@ -3,3 +3,6 @@
 
 #ignore compiled files
 *.pyc
+
+#ignore data
+Data/

@@ -1,3 +1,6 @@
+# short lecture on learning linear neurons by Geoffrey Hinton:
+# https://www.youtube.com/watch?v=WqQivCl8dmQ
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -31,27 +34,28 @@ def run():
     w = rand(n_dims)*0.1 - 0.5
     w0 = rand(1)*0.1 - 0.5
 
-    for i in range(n_iter):
+    for i in range(n_epochs):
         #feed data through linear neuron
         y = np.dot(w.T, x) + w0
         
         #estimate dE/dy, where E is squared error
-        dy = t - y
+        dEdy = t - y
         
-        #multiply with dy/dw and sum over training samples
-        dw = np.dot(x, dy)
-        #dw for w0 is dy*1 = dy
-        dw0 = sum(dy)
+        #multiply dE/dy with dy/dw and sum over training samples
+        # - dy/dw = x and
+        # - dy/dw0 = 1
+        dEdw = np.dot(x, dEdy)
+        dEdw0 = sum(dEdy)
         
         #update weights
-        w += nu * dw
-        w0 += nu * dw0
+        w += nu * dEdw
+        w0 += nu * dEdw0
         
         #print error and weights at end of each iteration
-        print "mean dE/dy:" + str(dw0) + " w0: " + str(w0) + " w: " + str(w)
+        print "sum dE/dy:" + str(dEdw0) + " w0: " + str(w0) + " w: " + str(w)
     
     #generate line from learned weights
-    l_x = np.linspace(0, 1, 2).reshape(x.shape)
+    l_x = np.linspace(0, 1, 2).reshape(1, -1)
     l_y = np.dot(w.T, l_x) + w0
     #plot training samples and fitted line
     plt.scatter(x, t)

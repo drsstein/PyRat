@@ -3,7 +3,7 @@ import numpy as np
 
 from numpy.random import rand
 
-def test():
+def run():
     #generate n samples of random data
     n = 100
     x = rand(n)
@@ -15,13 +15,14 @@ def test():
     #add some white noise
     y += rand(len(x)) - 0.5
     
-    #reshape x to contain each sample as one vector
+    #reshape x to contain samples as column vectors (one row per input dimension)
     x = x.reshape(1, len(x))
 
     #make y 't'arget for prediction
     t = y
-    #define number of iterations
-    n_iter = 100
+    
+    #define number of training epochs (look at each example once per epoch)
+    n_epochs = 100
     #define learning rate
     nu = 0.01
 
@@ -36,19 +37,23 @@ def test():
         
         #estimate dE/dy, where E is squared error
         dy = t - y
-        error = sum(dy)
         
-        #multiply with dy/dw
+        #multiply with dy/dw and sum over training samples
         dw = np.dot(x, dy)
+        #dw for w0 is dy*1 = dy
+        dw0 = sum(dy)
         
         #update weights
         w += nu * dw
-        w0 += nu * error
-        print "mean dE:" + str(error) + " w0: " + str(w0) + " w: " + str(w)
-
-    l_x = np.linspace(0, 1, 100).reshape(x.shape)
+        w0 += nu * dw0
+        
+        #print error and weights at end of each iteration
+        print "mean dE/dy:" + str(dw0) + " w0: " + str(w0) + " w: " + str(w)
+    
+    #generate line from learned weights
+    l_x = np.linspace(0, 1, 2).reshape(x.shape)
     l_y = np.dot(w.T, l_x) + w0
+    #plot training samples and fitted line
     plt.scatter(x, t)
     plt.plot(l_x.T, l_y)
-    plt.ioff()
     plt.show()

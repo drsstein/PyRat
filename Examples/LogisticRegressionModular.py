@@ -41,17 +41,17 @@ def run():
         h0.backprop(dEdy)        
         
         #print error and weights at end of each iteration
-        print "RMSE:" + str(rmse[i]) + " w0: " + str(h0.w0) + " w: " + str(h0.w)
+        print "RMSE:" + str(rmse[i]) + " w: " + str(h0.w)
     
     #plot data
-    plt.figure(figsize=(14, 6))
+    plt.figure(figsize=(20, 9))
     plt.subplot(121)
     plt.title('Separation in feature space')
     plt.scatter(x_pos[0,:], x_pos[1,:], color='blue', marker='+')
     plt.scatter(x_neg[0,:], x_neg[1,:], color='red', marker='o')
     
     #separation line at p=0.5 is defined as x2 = -w1/w2 * x1 - w0/w2
-    w0 = h0.w0
+    w0 = h0.w[n_dims]
     w = h0.w
     b = -w0/w[1]
     a = -w[0]/w[1]

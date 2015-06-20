@@ -30,8 +30,8 @@ def run():
     #randomly initialise weights
     n_dims = len(x)
     n_samples = len(x[0])
-    w = rand(n_dims)/n_dims - 0.5
-    w0 = rand(1)/n_dims - 0.5
+    w = np.random.rand(n_dims)/n_dims - 0.5
+    w0 = np.random.rand(1)/n_dims - 0.5
     rmse = np.zeros(n_epochs)
     
     for i in range(n_epochs):
@@ -64,7 +64,7 @@ def run():
         print "RMSE:" + str(rmse[i]) + " w0: " + str(w0) + " w: " + str(w)
     
     #plot data
-    plt.figure(figsize=(14, 6))
+    plt.figure(figsize=(20, 9))
     plt.subplot(121)
     plt.title('Separation in feature space')
     plt.scatter(x_pos[0,:], x_pos[1,:], color='blue', marker='+')

@@ -28,7 +28,8 @@ def run():
     
     #define number of training epochs (look at each example once per epoch)
     n_epochs = 200
-
+    learning_rate = 0.01
+    
     #initialize layer of logistic units with a single unit
     n_dims = len(x)
     h0 = pr.logistic(1, n_dims)
@@ -38,7 +39,7 @@ def run():
     for i in range(n_epochs):
         y = h0.forward(x)
         rmse[i], dEdy = pr.squared_error(t, y)
-        h0.backprop(dEdy)        
+        h0.backprop(dEdy, learning_rate)        
         
         #print error and weights at end of each iteration
         print "RMSE:" + str(rmse[i]) + " w: " + str(h0.w)

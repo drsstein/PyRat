@@ -44,6 +44,8 @@ def run():
     n_epochs = 3
     #number of iterations in each epoch
     n_iter = 10000
+    #learning rate
+    learning_rate = 0.01
     
     rmse = np.zeros(n_epochs*n_iter)
     
@@ -53,13 +55,13 @@ def run():
             y0 = h0.forward(x)
             y1 = h1.forward(y0)
             rmse[e*n_iter + i], dEdy = pr.squared_error(t, y1)
-            dEdx1 = h1.backprop(dEdy)
-            h0.backprop(dEdx1)
+            dEdx1 = h1.backprop(dEdy, learning_rate)
+            h0.backprop(dEdx1, learning_rate)
             
             #print error and weights at end of each iteration
             if(i % 100 == 0):
                 print "RMSE:" + str(rmse[i]) + " w: " + str(h0.w)
-        h0.learning_rate *= 0.1
+        learning_rate *= 0.1
         
     #plot data
     plt.figure(figsize=(20, 9))

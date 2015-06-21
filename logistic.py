@@ -1,7 +1,7 @@
 import numpy as np
 
 class logistic:
-    learning_rate = 0.001
+    
     #constructor
     def __init__(self, n_units, n_inputs):
         print 'Initializing logistic layer with ' + str(n_units) + ' units and ' + str(n_inputs) + ' inputs per unit '
@@ -20,7 +20,7 @@ class logistic:
         return self.y
     
     #take error-derivative with respect to output as parameter
-    def backprop(self, dEdy):
+    def backprop(self, dEdy, learning_rate):
         self.dEdy = dEdy
         #estimate dE/dz = dE/dy * dy/dz, where
         #dy/dz = y(1-y)
@@ -32,13 +32,11 @@ class logistic:
         # and sum over all training samples
         dEdw = np.dot(self.x, dEdz.T)
         
-        #sum weights in each dimension over all neurons
-        sumW = sum(self.w.T)
         #dE/dx for each training sample
-        dEdx = np.dot(sumW[0:self.n_inputs,:], dEdz)
+        dEdx = np.dot(self.w[0:self.n_inputs,:], dEdz)
         
         #update weights
-        self.w += self.learning_rate * dEdw
+        self.w += learning_rate * dEdw
         
         return dEdx
         

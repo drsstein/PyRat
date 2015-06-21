@@ -11,12 +11,17 @@ Why the name PyRat?
 - Pirates are cool.
 
 In which order should I go through the examples?
+
 The examples follow roughly Geoffrey Hintons online course on deep neural networks. When I last checked, they were all to be found under the following link:
 https://www.youtube.com/user/TRUONGMINHANH93/videos
 
 I would suggest the following order:
+
 1. LinearRegression
+
 2. LogisticRegression
+
 3. LogisticRegressionModular (first use of reusable library code)
+
 4. BackPropagation
 

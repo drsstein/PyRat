@@ -1,9 +1,9 @@
 PyRat: Learn about deep neural nets by poking the (computational) rat's brain.
 
 What is PyRat about
-- self-taught introduction to deep learning by doing (programming)
+- self-taught introduction to deep learning by doing (both programming and playing around with the models)
 - focus on code understandability, not efficiency
-- code examples of inc
+- code examples of increasing complexity
 
 Why the name PyRat?
 - I see deep neural networks as the computational analogy to a rat brain.
@@ -24,4 +24,6 @@ I would suggest the following order:
 3. LogisticRegressionModular (first use of reusable library code)
 
 4. BackPropagation
+
+5. BackPropagationSoftmax
 

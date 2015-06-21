@@ -8,7 +8,7 @@ class softmax:
     def __init__(self, n_units, n_inputs):
         self.n_outputs = n_units
         self.n_inputs = n_inputs
-        self.w = np.random.rand(self.n_inputs+1, self.n_outputs)/self.n_inputs - 0.5
+        self.w = (np.random.rand(self.n_inputs+1, self.n_outputs)- 0.5)/self.n_inputs 
     
     #as the softmax is always the last layer in the network, and the cross-entropy
     #error can be easily computed with respect to the logit (y - t), we do both
@@ -25,12 +25,14 @@ class softmax:
         self.y /= sum(self.y)
         
         #estimate error derivative
-        dEdz = self.y - targets
+        dEdz = targets - self.y
         #estimate cross entropy error across samples
-        C = sum(-sum(targets*np.log(self.y)))
+        #it is important to normalize here wrt. the number of training cases
+        n_samples = dEdz.shape[1]
+        C = sum(-sum(targets*np.log(self.y)))/n_samples
         
         #propagate backwards through weights and inputs
-        dEdw = np.dot(self.x, dEdz.T)
+        dEdw = np.dot(self.x, dEdz.T)/n_samples
         
         #dE/dx for each training sample
         dEdx = np.dot(self.w[0:self.n_inputs,:], dEdz)

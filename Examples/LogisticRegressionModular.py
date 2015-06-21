@@ -28,7 +28,7 @@ def run():
     
     #define number of training epochs (look at each example once per epoch)
     n_epochs = 200
-    learning_rate = 0.01
+    learning_rate = 10.
     
     #initialize layer of logistic units with a single unit
     n_dims = len(x)

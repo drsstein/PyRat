@@ -7,7 +7,7 @@ class logistic:
         print 'Initializing logistic layer with ' + str(n_units) + ' units and ' + str(n_inputs) + ' inputs per unit '
         self.n_outputs = n_units
         self.n_inputs = n_inputs
-        self.w = np.random.rand(self.n_inputs+1, self.n_outputs)/self.n_inputs - 0.5
+        self.w = (np.random.rand(self.n_inputs+1, self.n_outputs)- 0.5)/n_inputs 
     
     #take data from previous layer as input
     def forward(self, x):
@@ -30,7 +30,8 @@ class logistic:
         #estimate dE/dw = dE/dy * dy/dz * dz/dw, where
         # - dz/dw = x and
         # and sum over all training samples
-        dEdw = np.dot(self.x, dEdz.T)
+        n_samples = dEdz.shape[1]
+        dEdw = np.dot(self.x, dEdz.T)/n_samples
         
         #dE/dx for each training sample
         dEdx = np.dot(self.w[0:self.n_inputs,:], dEdz)

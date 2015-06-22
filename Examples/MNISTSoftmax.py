@@ -24,58 +24,79 @@ def run():
     labels_train, labels_test = pr.mnist.read_labels()
     data_train, data_test = pr.mnist.read_images()
     
-    #data rows represent images and columns pixels, neuron layers expect rows to
-    #be different feature dimensions (pixels) and columns to be separate images.
-    data_train = data_train.T
-    data_test = data_test.T
-    
-    #data is in range [0, 255], but we need it to be within [-0.5,0.5]
-    data_train = data_train/255 - 0.5
-    data_test = data_test/255 - 0.5
-    
     #labels are vectors with numbers in range [0,9], whereas the softmax layer
     #expects labels to be indicator functions over vectors with one element per
     #class.
     def vectorize_labels(labels, n_classes):
-        l = np.zeros((n_classes, len(labels))) #get all zero array of target size
+        l = np.zeros((len(labels), n_classes)) #get all zero array of target size
         a = np.arange(len(labels)) #column index for each label
-        l[labels, a] = 1 #set in each section of 10 the correct index to 1
+        l[a, labels] = 1 #set in each section of 10 the correct index to 1
         return l
     labels_train = vectorize_labels(labels_train, 10)
     
+    #separate training labels and training data into batches of fix size
+    batch_size = 100
+    n_batches = data_train.shape[0]/batch_size
+    batch_data = data_train.reshape(-1, batch_size, data_train.shape[1])
+    batch_labels = labels_train.reshape(-1, batch_size, labels_train.shape[1])
+    
+    #Transpose data, because data rows represent images and columns pixels, 
+    #neuron layers expect rows to be features (pixels) and columns to represent
+    # samples (images).
+    batch_data = batch_data.transpose(0, 2, 1)
+    batch_labels = batch_labels.transpose(0, 2, 1)
+    data_test = data_test.T
+    
+    #data is in range [0, 255], but we need it to be within [-0.5,0.5]
+    batch_data = batch_data/255 - 0.5
+    data_test = data_test/255 - 0.5
+    
     #initialize network: here we use a single softmax layer with one unit per class
-    h0 = pr.softmax(10, len(data_train))
+    n_features = batch_data.shape[1]
+    h0 = pr.softmax(10, n_features)
     
     #number of training epochs (learning rate decreases after each epoch)
-    n_epochs = 1
+    n_epochs = 3
     #number of iterations per epoch (all data is seen once per iteration)
     n_iter = 10000
     #learning rate
-    learning_rate = 0.05
+    learning_rate = 0.01
     #track cross-entropy error as it decreases over time (plotted after training)
-    cost = np.zeros(n_epochs*n_iter)
+    cost = np.zeros(n_epochs*n_iter*n_batches)
     
     #train network
     start = time.time()
     for e in range(n_epochs):
     
         for i in range(n_iter):
-            cost[e*n_iter + i], dEdx1 = h0.evaluate(data_train, labels_train, learning_rate)
-            print "error:" + str(cost[e*n_iter+i])
-            if(i % 50 == 0):
-                #evaluate test error
-                #1. feed test set through the network
+            batch_cost = 0
+            for b in range(n_batches):
+                #pass training data through softmax, estimate error and backpropagate
+                C, dEdx1 = h0.evaluate(batch_data[b], batch_labels[b], learning_rate)
+                batch_cost += C
+                
+            cost[e*n_iter + i] = batch_cost/n_batches
+            #print error in each iteration
+            print "error:" + str(cost[e*n_iter + i])    
+            #estimate error on test set every n iterations
+            if(i % 10 == 0):
+                #feed test set through the network
                 prediction = h0.forward(data_test)
+                #find for each sample the index in label vector with highest probability
                 l_p = np.argmax(prediction, axis=0)
+                #compare predicted labels to ground truth
                 diff = labels_test - l_p
+                #count number of false predictions
                 errors = np.count_nonzero(diff)
-                print str(e*n_iter + i) + ": test error: " + str(errors) +" - " + str((errors*100)/len(labels_test)) + "%"
+                
+                print str(e*n_iter + i) + ": test error: " + str(errors) +" - " + str((errors*100.0)/len(labels_test)) + "%"
+                
+        #adapt learning at end of each epoch
         learning_rate *= 0.1
-        
+    
+    #measure training time
     end = time.time()
-    print "Time per iteration [s]: " + str((end-start)/(n_epochs*n_iter))
-    
-    
+    print "Training time in seconds: " + str(end-start) + " - " + + str((end-start)/(n_epochs*n_iter)) + " per iteration"
     
     #plot mean error over iterations
     e_x = np.linspace(1, n_epochs*n_iter, n_epochs*n_iter)

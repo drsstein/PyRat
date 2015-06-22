@@ -10,10 +10,7 @@ class softmax:
         self.n_inputs = n_inputs
         self.w = (np.random.rand(self.n_inputs+1, self.n_outputs)- 0.5)/self.n_inputs 
     
-    #as the softmax is always the last layer in the network, and the cross-entropy
-    #error can be easily computed with respect to the logit (y - t), we do both
-    #forward and backpropagation in a single function call
-    def evaluate(self, x, targets, learning_rate):
+    def forward(self, x):
         self.x = np.vstack([x, np.ones(x.shape[1])])
 
         #estimate logit
@@ -23,6 +20,13 @@ class softmax:
         # y_i = e^(z_i) / sum_i(e^(z_i))
         self.y = np.exp(z)
         self.y /= sum(self.y)
+        return self.y
+    
+    #as the softmax is always the last layer in the network, and the cross-entropy
+    #error is computed with respect to the logit (y - t), we do both
+    #forward and backpropagation in a single function call
+    def evaluate(self, x, targets, learning_rate):
+        self.forward(x)
         
         #estimate error derivative
         dEdz = targets - self.y

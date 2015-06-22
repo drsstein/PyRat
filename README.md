@@ -27,3 +27,5 @@ I would suggest the following order:
 
 5. BackPropagationSoftmax
 
+6. MNISTSoftmax
+
